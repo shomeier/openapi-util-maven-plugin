@@ -2,6 +2,9 @@ package org.sho;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -9,6 +12,9 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.parser.OpenAPIV3Parser;
 
 /**
  * Goal which touches a timestamp file.
@@ -32,12 +38,25 @@ public class Merge extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         validateParameters();
 
+
         try {
             FileUtils.copyFile(headerFile, outputFile);
+            try (Stream<Path> files = Files.list(inputDirectory.toPath())) {
+                files
+                        .filter(p -> p.toFile().isFile())
+                        .forEach(this::process);
+            }
         } catch (IOException e) {
             throw new MojoExecutionException("Error while merging", e);
         }
 
+    }
+
+    private void process(Path path) {
+        OpenAPI parser = new OpenAPIV3Parser().read(path.toString());
+        Paths paths = parser.getPaths();
+        // paths.forEach((s, p) -> getLog().debug(String.format("Path: %s", s)));
+        paths.keySet().stream().forEach(System.out::println);
     }
 
     private void validateParameters() throws MojoExecutionException {
