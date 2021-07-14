@@ -2,5 +2,6 @@
     "java.referencesCodeLens.enabled": false,
     "java.debug.settings.enableRunDebugCodeLens" : false,
     "vsintellicode.java.completionsEnabled": false,
-    "java.trace.server": "verbose"
+    "java.trace.server": "verbose",
+    "java.dependency.syncWithFolderExplorer": false
 }

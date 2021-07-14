@@ -1,0 +1,88 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Product API
+  description: REST API for read, update and search operations about products
+  license:
+    name: Commercial
+servers:
+  - url: '{protocol}://api.example.com/api/core/v1'
+    description: Operations about products
+    variables:
+      protocol:
+        enum:
+          - http
+          - https
+        default: https
+paths:
+  /pim/products:
+    get:
+      tags:
+        - Products
+      summary: list all products
+      operationId: listProducts
+      parameters:
+        - $ref: '../../base/parameters/filterByName.yaml#/components/parameters/filterByName'
+        - $ref: '../../base/parameters/page.yaml#/components/parameters/page'
+        - $ref: '../../base/parameters/pageSize.yaml#/components/parameters/pageSize'
+        - $ref: '../../base/parameters/orderBy.yaml#/components/parameters/orderBy'
+      responses:
+        200:
+          description: list of products
+          content:
+            application/json:
+              schema:
+                $ref: '../model/product.yaml#/components/schemas/Products'
+    post:
+      tags:
+        - Products
+      summary: get products
+      operationId: getProducts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../model/productRequest.yaml#/components/schemas/ProductRequest'
+      responses:
+        200:
+          description: Products found
+          content:
+            application/xml:
+              schema:
+                type: string
+        401:
+          $ref: '../../base/errors/unauthorized.yaml#/components/responses/Unauthorized'
+        404:
+          $ref: '../../base/errors/not-found.yaml#/components/responses/NotFound'
+        400:
+          $ref: '../../base/errors/invalid-input.yaml#/components/responses/InvalidInput'
+        500:
+          $ref: '../../base/errors/server-error.yaml#/components/responses/ServerError'
+  /pim/products/query:
+    post:
+      tags:
+        - Products
+      summary: query for product tids
+      operationId: getProductTids
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../model/productRequest.yaml#/components/schemas/ProductQuery'
+      responses:
+        200:
+          description: Product tids found
+          content:
+            application/json:
+              schema:
+                $ref: '../model/productRequest.yaml#/components/schemas/ProductRequest'
+        401:
+          $ref: '../../base/errors/unauthorized.yaml#/components/responses/Unauthorized'
+        404:
+          $ref: '../../base/errors/not-found.yaml#/components/responses/NotFound'
+        400:
+          $ref: '../../base/errors/invalid-input.yaml#/components/responses/InvalidInput'
+        500:
+          $ref: '../../base/errors/server-error.yaml#/components/responses/ServerError'

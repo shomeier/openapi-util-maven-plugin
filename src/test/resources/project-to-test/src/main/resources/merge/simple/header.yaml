@@ -1,0 +1,17 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Test API
+  description: Test API
+  license:
+    name: Commercial
+servers:
+  - url: '{protocol}://api.example.com/api/core/v1'
+    description: Test API Server
+    variables:
+      protocol:
+        enum:
+          - http
+          - https
+        default: https
+paths:

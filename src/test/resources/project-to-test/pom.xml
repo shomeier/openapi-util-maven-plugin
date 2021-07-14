@@ -5,18 +5,21 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.sho</groupId>
-  <artifactId>openapi-util-maven-plugin</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <artifactId>project-to-test</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Test MyMojo</name>
 
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-my-plugin</artifactId>
+        <groupId>org.sho</groupId>
+        <artifactId>openapi-util-maven-plugin</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
         <configuration>
-          <!-- Specify the MyMojo parameter -->
-          <outputDirectory>target/test-harness/project-to-test</outputDirectory>
+          <headerFile>${project.basedir}/src/main/resources/merge/simple/header.yaml</headerFile>
+          <inputDirectory>${project.basedir}/src/main/resources/merge/simple/paths</inputDirectory>
+          <outputFile>${project.build.directory}/output.yaml</outputFile>
         </configuration>
       </plugin>
     </plugins>
