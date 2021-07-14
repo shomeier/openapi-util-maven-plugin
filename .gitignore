@@ -32,6 +32,7 @@ target
 
 # VSC / Eclipse
 .apt_generated_tests
+.factorypath
 .settings
 .classpath
 .project
