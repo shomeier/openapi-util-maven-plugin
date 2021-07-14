@@ -23,7 +23,7 @@ public class Merge extends AbstractMojo {
     @Parameter(required = true)
     private File headerFile;
 
-    @Parameter(defaultValue = "${project.basedir}/src/main/resources", required = false)
+    @Parameter(defaultValue = "${project.basedir}/src/main/resources", required = true)
     private File inputDirectory;
 
     @Parameter(required = true)
