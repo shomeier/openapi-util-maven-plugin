@@ -1,0 +1,25 @@
+openapi: 3.0.0
+info:
+  title: Test API
+  description: Test API
+  license:
+    name: Commercial
+  version: 1.0.0
+servers:
+- url: "{protocol}://api.example.com/api/core/v1"
+  description: Test API Server
+  variables:
+    protocol:
+      default: https
+      enum:
+      - http
+      - https
+paths:
+  /pim/products:
+    $ref: ./paths/products.yaml#/paths/~1pim~1products
+  /pim/products/query:
+    $ref: ./paths/products.yaml#/paths/~1pim~1products~1query
+  /pim/attributes/{node}:
+    $ref: "./paths/attributes.yaml#/paths/~1pim~1attributes~1{node}"
+  /pim/attribute-definitions:
+    $ref: ./paths/attribute-definitions.yaml#/paths/~1pim~1attribute-definitions

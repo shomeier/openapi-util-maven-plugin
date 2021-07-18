@@ -1,8 +1,10 @@
 package org.sho.maven.plugin.openapi.util;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.io.File;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.testing.MojoRule;
 import org.apache.maven.plugin.testing.WithoutMojo;
 import org.junit.Rule;
@@ -34,6 +36,13 @@ public class MergeTest {
         File outputFile = (File) rule.getVariableValueFromObject(myMojo, "outputFile");
         assertNotNull(outputFile);
         assertTrue(outputFile.exists());
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        File expectedFile = new File(classLoader
+                .getResource("project-to-test/src/main/resources/merge/simple/expectedOutput.yaml").getFile());
+        assertEquals("The files differ!",
+                FileUtils.readFileToString(expectedFile, "utf-8"),
+                FileUtils.readFileToString(outputFile, "utf-8"));
     }
 
     /** Do not need the MojoRule. */
