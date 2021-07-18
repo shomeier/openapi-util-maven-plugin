@@ -28,9 +28,3 @@ paths:
             application/xml:
               schema:
                 type: string
-        401:
-          $ref: '../../base/errors/unauthorized.yaml#/components/responses/Unauthorized'
-        404:
-          $ref: '../../base/errors/not-found.yaml#/components/responses/NotFound'
-        500:
-          $ref: '../../base/errors/server-error.yaml#/components/responses/ServerError'

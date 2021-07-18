@@ -21,18 +21,13 @@ paths:
         - Products
       summary: list all products
       operationId: listProducts
-      parameters:
-        - $ref: '../../base/parameters/filterByName.yaml#/components/parameters/filterByName'
-        - $ref: '../../base/parameters/page.yaml#/components/parameters/page'
-        - $ref: '../../base/parameters/pageSize.yaml#/components/parameters/pageSize'
-        - $ref: '../../base/parameters/orderBy.yaml#/components/parameters/orderBy'
       responses:
         200:
-          description: list of products
+          description: Products found
           content:
-            application/json:
+            application/xml:
               schema:
-                $ref: '../model/product.yaml#/components/schemas/Products'
+                type: string
     post:
       tags:
         - Products
@@ -43,7 +38,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '../model/productRequest.yaml#/components/schemas/ProductRequest'
+              type: string
       responses:
         200:
           description: Products found
@@ -51,14 +46,6 @@ paths:
             application/xml:
               schema:
                 type: string
-        401:
-          $ref: '../../base/errors/unauthorized.yaml#/components/responses/Unauthorized'
-        404:
-          $ref: '../../base/errors/not-found.yaml#/components/responses/NotFound'
-        400:
-          $ref: '../../base/errors/invalid-input.yaml#/components/responses/InvalidInput'
-        500:
-          $ref: '../../base/errors/server-error.yaml#/components/responses/ServerError'
   /pim/products/query:
     post:
       tags:
@@ -70,19 +57,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '../model/productRequest.yaml#/components/schemas/ProductQuery'
+              type: string
       responses:
         200:
           description: Product tids found
           content:
             application/json:
               schema:
-                $ref: '../model/productRequest.yaml#/components/schemas/ProductRequest'
-        401:
-          $ref: '../../base/errors/unauthorized.yaml#/components/responses/Unauthorized'
-        404:
-          $ref: '../../base/errors/not-found.yaml#/components/responses/NotFound'
-        400:
-          $ref: '../../base/errors/invalid-input.yaml#/components/responses/InvalidInput'
-        500:
-          $ref: '../../base/errors/server-error.yaml#/components/responses/ServerError'
+                type: string

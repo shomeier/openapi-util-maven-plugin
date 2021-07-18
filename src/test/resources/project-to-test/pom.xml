@@ -19,7 +19,9 @@
         <configuration>
           <headerFile>${project.basedir}/src/main/resources/merge/simple/header.yaml</headerFile>
           <inputDirectory>${project.basedir}/src/main/resources/merge/simple/paths</inputDirectory>
-          <outputFile>${project.build.directory}/output.yaml</outputFile>
+          <outputFile>
+            ${project.basedir}/src/main/resources/merge/simple/output.yaml
+          </outputFile>
         </configuration>
       </plugin>
     </plugins>

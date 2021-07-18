@@ -1,4 +1,4 @@
-package org.sho;
+package org.sho.maven.plugin.openapi.util;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

@@ -23,20 +23,13 @@ paths:
       operationId: getPimAttributeByNode
       parameters:
         - $ref: '#/components/parameters/node'
-        - $ref: '../parameters/ignoreTableAttributes.yaml#/components/parameters/ignoreTableAttributes'
       responses:
         200:
           description: Attributes found
           content:
             application/json:
               schema:
-                $ref: '../model/attributes.yaml#/components/schemas/Attributes'
-        401:
-          $ref: '../../base/errors/unauthorized.yaml#/components/responses/Unauthorized'
-        404:
-          $ref: '../../base/errors/not-found.yaml#/components/responses/NotFound'
-        500:
-          $ref: '../../base/errors/server-error.yaml#/components/responses/ServerError'
+                type: string
 
 components:
   parameters:

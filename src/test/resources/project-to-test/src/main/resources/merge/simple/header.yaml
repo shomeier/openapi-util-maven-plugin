@@ -14,4 +14,3 @@ servers:
           - http
           - https
         default: https
-paths:
