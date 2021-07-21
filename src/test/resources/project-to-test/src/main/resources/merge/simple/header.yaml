@@ -1,16 +1,8 @@
-openapi: 3.0.0
+openapi: "3.0.0"
 info:
   version: 1.0.0
-  title: Test API
-  description: Test API
+  title: Swagger Petstore API
   license:
-    name: Commercial
+    name: MIT
 servers:
-  - url: '{protocol}://api.example.com/api/core/v1'
-    description: Test API Server
-    variables:
-      protocol:
-        enum:
-          - http
-          - https
-        default: https
+  - url: http://petstore.swagger.io/v1
