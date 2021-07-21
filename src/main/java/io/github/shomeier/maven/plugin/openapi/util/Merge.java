@@ -1,4 +1,4 @@
-package org.sho.maven.plugin.openapi.util;
+package io.github.shomeier.maven.plugin.openapi.util;
 
 import java.io.File;
 import java.io.IOException;

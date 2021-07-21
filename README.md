@@ -13,7 +13,7 @@ Usage
 Add to your `build->plugins` section (default phase is `initialize` phase)
 ```xml
 <plugin>
-    <groupId>org.sho</groupId>
+    <groupId>io.github.shomeier</groupId>
     <artifactId>openapi-util-maven-plugin</artifactId>
     <version>1.0.0</version>
     <executions>
@@ -121,7 +121,7 @@ This plugin is bound to phase 'initialize' which comes before 'generate-sources'
 
 ```xml
 <plugin>
-    <groupId>org.sho</groupId>
+    <groupId>io.github.shomeier</groupId>
     <artifactId>openapi-util-maven-plugin</artifactId>
     <version>1.0.0</version>
     <executions>

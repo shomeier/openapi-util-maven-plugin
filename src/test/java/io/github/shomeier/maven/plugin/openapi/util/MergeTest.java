@@ -1,4 +1,4 @@
-package org.sho.maven.plugin.openapi.util;
+package io.github.shomeier.maven.plugin.openapi.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -9,6 +9,7 @@ import org.apache.maven.plugin.testing.MojoRule;
 import org.apache.maven.plugin.testing.WithoutMojo;
 import org.junit.Rule;
 import org.junit.Test;
+import io.github.shomeier.maven.plugin.openapi.util.Merge;
 
 public class MergeTest {
     @Rule
