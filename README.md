@@ -23,7 +23,7 @@ Add to your `build->plugins` section (default phase is `initialize` phase)
             </goals>
             <configuration>
                 <headerFile>${project.basedir}/src/main/resources/header.yaml<headerFile>
-                <!-- resources element is similiar to maven-resources plugin
+                <!-- resources element is similar to maven-resources plugin
                     which means you can use <includes> <excludes> here -->
                 <resources>
                   <resource>
