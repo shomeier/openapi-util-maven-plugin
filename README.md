@@ -24,7 +24,7 @@ Add to your `build->plugins` section (default phase is `initialize` phase)
             <configuration>
                 <headerFile>${project.basedir}/src/main/resources/header.yaml<headerFile>
                 <!-- resources element is similar to maven-resources plugin
-                    which means you can use <includes> <excludes> here -->
+                    which means you can use <includes>, <excludes> here -->
                 <resources>
                   <resource>
                     <directory>${project.basedir}/src/main/resources/paths</directory>
