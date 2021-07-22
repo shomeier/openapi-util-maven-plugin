@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Resource;
@@ -27,6 +30,7 @@ import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.parser.ObjectMapperFactory;
 import io.swagger.v3.parser.OpenAPIV3Parser;
 
 @Mojo(name = Merge.GOAL, defaultPhase = LifecyclePhase.INITIALIZE)
@@ -155,8 +159,24 @@ public class Merge extends AbstractMojo {
                 }
             }
         }
+
         String pathsString = Yaml.pretty().writeValueAsString(target);
         FileUtils.writeStringToFile(targetFile.toFile(), pathsString, Charset.defaultCharset(), false);
+
+        // Another option to write yamls here
+        // ObjectMapper yamlMapper = createYaml();
+        // String pathsString = yamlMapper.writer(new DefaultPrettyPrinter()).writeValueAsString(target);
+        // FileUtils.writeStringToFile(targetFile.toFile(), pathsString, StandardCharsets.UTF_8, false);
+    }
+
+    protected static ObjectMapper createYaml() {
+        ObjectMapper yamlMapper = ObjectMapperFactory.createYaml();
+        ((YAMLFactory) yamlMapper.getFactory()).disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER);
+        ((YAMLFactory) yamlMapper.getFactory()).enable(YAMLGenerator.Feature.MINIMIZE_QUOTES);
+        ((YAMLFactory) yamlMapper.getFactory()).enable(YAMLGenerator.Feature.SPLIT_LINES);
+        ((YAMLFactory) yamlMapper.getFactory()).enable(YAMLGenerator.Feature.ALWAYS_QUOTE_NUMBERS_AS_STRINGS);
+        ((YAMLFactory) yamlMapper.getFactory()).enable(YAMLGenerator.Feature.INDENT_ARRAYS);
+        return yamlMapper;
     }
 
     private String buildRef(Path relativePath, String oaPath) {
