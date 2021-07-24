@@ -33,10 +33,6 @@ import io.swagger.v3.parser.OpenAPIV3Parser;
 public class Merge extends AbstractMojo {
     public static final String GOAL = "merge";
 
-    private static final String[] EMPTY_STRING_ARRAY = {};
-
-    private static final String[] DEFAULT_INCLUDES = {"**/**"};
-
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     MavenProject project;
 
