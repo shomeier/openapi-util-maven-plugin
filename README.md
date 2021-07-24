@@ -23,9 +23,15 @@ Add to your `build->plugins` section (default phase is `initialize` phase)
             </goals>
             <configuration>
                 <headerFile>${project.basedir}/src/main/resources/header.yaml<headerFile>
-                <inputDirectory>${project.basedir}/src/main/resources/paths<inputDirectory>
+                <!-- resources element is similar to maven-resources plugin
+                    which means you can use <includes>, <excludes> here -->
+                <resources>
+                  <resource>
+                    <directory>${project.basedir}/src/main/resources/paths</directory>
+                  </resource>
+                </resources>
                 <outputFile>${project.build.directory}/merged.yaml</outputFile>
-        </configuration>
+            </configuration>
         </execution>
     </executions>
 </plugin>
@@ -131,9 +137,13 @@ This plugin is bound to phase 'initialize' which comes before 'generate-sources'
             </goals>
             <configuration>
                 <headerFile>${project.basedir}/src/main/resources/header.yaml<headerFile>
-                <inputDirectory>${project.basedir}/src/main/resources/paths<inputDirectory>
+                <resources>
+                  <resource>
+                    <directory>${project.basedir}/src/main/resources/paths</directory>
+                  </resource>
+                </resources>
                 <outputFile>${project.build.directory}/merged.yaml</outputFile>
-        </configuration>
+            </configuration>
         </execution>
     </executions>
 </plugin>
