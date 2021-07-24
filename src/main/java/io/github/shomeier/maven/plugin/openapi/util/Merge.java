@@ -189,23 +189,8 @@ public class Merge extends AbstractMojo {
     }
 
     private void validateParameters() throws MojoExecutionException {
-        validateFile(headerFile, "headerFile");
-        validateParam(outputFile, "outputFile");
-    }
-
-    private void validateFile(File file, String paramName) throws MojoExecutionException {
-        validateParam(file, "paramName");
-        if (!headerFile.exists()) {
-            throw new MojoExecutionException(
-                    String.format("The specified %s '%s' does not exist!", paramName, file));
-        }
-    }
-
-    private void validateParam(Object param, String paramName) throws MojoExecutionException {
-        if (param == null) {
-            throw new MojoExecutionException(
-                    String.format("The parameter '%s' is not set!", paramName));
-        }
+        Validator.validateFile(headerFile, "headerFile");
+        Validator.validateParam(outputFile, "outputFile");
     }
 
     /**
