@@ -53,6 +53,9 @@ public class Merge extends AbstractMojo {
     @Parameter(required = true)
     private File outputFile;
 
+    @Parameter(defaultValue = "false", required = false)
+    private boolean expandPaths;
+
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
     protected MavenSession session;
 
@@ -154,7 +157,10 @@ public class Merge extends AbstractMojo {
                     // relativize assumes the path is a directory that is why we need to relativize from parnet
                     Path relativePath = targetFile.getParent().relativize(filePathEntry.getKey());
                     String ref = buildRef(relativePath, sourcePaths.getKey());
-                    PathItem pathItem = new PathItem().$ref(ref);
+                    PathItem pathItem = sourcePaths.getValue();
+                    if (!expandPaths) {
+                        pathItem = new PathItem().$ref(ref);
+                    }
                     target.path(sourcePaths.getKey(), pathItem);
                 }
             }
