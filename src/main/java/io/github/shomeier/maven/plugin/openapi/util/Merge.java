@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,8 +21,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.util.DirectoryScanner;
-import org.codehaus.plexus.util.Scanner;
 import org.sonatype.plexus.build.incremental.BuildContext;
 import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -68,7 +64,8 @@ public class Merge extends AbstractMojo {
         try {
             FileUtils.copyFile(headerFile, outputFile);
 
-            List<Path> includedFiles = getIncludedFiles();
+            ResourcesResolver resolver = new ResourcesResolver(resources, project, getLog());
+            List<Path> includedFiles = resolver.getIncludedFiles();
             Map<Path, OpenAPI> filePaths = includedFiles.stream()
                     .collect(Collectors.toMap(p -> p, this::parse));
 
@@ -76,62 +73,6 @@ public class Merge extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoExecutionException("Error while merging", e);
         }
-    }
-
-    List<Path> getIncludedFiles() {
-
-        List<Path> includedFiles = new ArrayList<>();
-
-        for (Resource resource : resources) {
-
-            File resourceDirectory = new File(resource.getDirectory());
-
-            if (!resourceDirectory.isAbsolute()) {
-                resourceDirectory = new File(project.getBasedir(), resourceDirectory.getPath());
-            }
-
-            if (!resourceDirectory.exists()) {
-                getLog().info("skip non existing resourceDirectory " + resourceDirectory.getPath());
-                continue;
-            }
-
-            // Scanner scanner = buildContext.newScanner(resourceDirectory, true);
-            DirectoryScanner scanner = new DirectoryScanner();
-            scanner.setBasedir(resourceDirectory);
-            setupScanner(resource, scanner, true);
-            scanner.scan();
-
-            // for use in lambda below
-            final File _resourceDirectory = resourceDirectory;
-            List<Path> paths = Arrays.asList(scanner.getIncludedFiles()).stream()
-                    .map(s -> java.nio.file.Paths.get(_resourceDirectory.getAbsolutePath(), s))
-                    .collect(Collectors.toList());
-
-            includedFiles.addAll(paths);
-        }
-
-        return includedFiles;
-    }
-
-    private String[] setupScanner(Resource resource, Scanner scanner, boolean addDefaultExcludes) {
-        String[] includes = null;
-        if (resource.getIncludes() != null && !resource.getIncludes().isEmpty()) {
-            includes = resource.getIncludes().toArray(EMPTY_STRING_ARRAY);
-        } else {
-            includes = DEFAULT_INCLUDES;
-        }
-        scanner.setIncludes(includes);
-
-        String[] excludes = null;
-        if (resource.getExcludes() != null && !resource.getExcludes().isEmpty()) {
-            excludes = resource.getExcludes().toArray(EMPTY_STRING_ARRAY);
-            scanner.setExcludes(excludes);
-        }
-
-        if (addDefaultExcludes) {
-            scanner.addDefaultExcludes();
-        }
-        return includes;
     }
 
     private OpenAPI parse(Path path) {
