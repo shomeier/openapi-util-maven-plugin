@@ -87,9 +87,7 @@ public class Merge extends AbstractMojo {
             File resourceDirectory = new File(resource.getDirectory());
 
             if (!resourceDirectory.isAbsolute()) {
-                // TODO;
-                // resourceDirectory =
-                // new File( mavenResourcesExecution.getResourcesBaseDirectory(), resourceDirectory.getPath() );
+                resourceDirectory = new File(project.getBasedir(), resourceDirectory.getPath());
             }
 
             if (!resourceDirectory.exists()) {
@@ -100,12 +98,13 @@ public class Merge extends AbstractMojo {
             // Scanner scanner = buildContext.newScanner(resourceDirectory, true);
             DirectoryScanner scanner = new DirectoryScanner();
             scanner.setBasedir(resourceDirectory);
-
             setupScanner(resource, scanner, true);
-
             scanner.scan();
+
+            // for use in lambda below
+            final File _resourceDirectory = resourceDirectory;
             List<Path> paths = Arrays.asList(scanner.getIncludedFiles()).stream()
-                    .map(s -> java.nio.file.Paths.get(resourceDirectory.getAbsolutePath(), s))
+                    .map(s -> java.nio.file.Paths.get(_resourceDirectory.getAbsolutePath(), s))
                     .collect(Collectors.toList());
 
             includedFiles.addAll(paths);

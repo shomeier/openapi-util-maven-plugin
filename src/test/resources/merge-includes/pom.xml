@@ -20,7 +20,7 @@
           <headerFile>${project.basedir}/src/main/resources/header.yaml</headerFile>
           <resources>
             <resource>
-              <directory>${project.basedir}/src/main/resources</directory>
+              <directory>src/main/resources</directory>
               <includes>
                 <include>pets/*.yaml</include>
                 <include>stores/*.yaml</include>
