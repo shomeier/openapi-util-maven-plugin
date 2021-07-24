@@ -82,7 +82,7 @@ public class Merge extends AbstractMojo {
 
         List<Path> includedFiles = new ArrayList<>();
 
-        for (Resource resource : getResources()) {
+        for (Resource resource : resources) {
 
             File resourceDirectory = new File(resource.getDirectory());
 
@@ -191,19 +191,5 @@ public class Merge extends AbstractMojo {
     private void validateParameters() throws MojoExecutionException {
         Validator.validateFile(headerFile, "headerFile");
         Validator.validateParam(outputFile, "outputFile");
-    }
-
-    /**
-     * @return {@link #resources}
-     */
-    public List<Resource> getResources() {
-        return resources;
-    }
-
-    /**
-     * @param resources set {@link #resources}
-     */
-    public void setResources(List<Resource> resources) {
-        this.resources = resources;
     }
 }
