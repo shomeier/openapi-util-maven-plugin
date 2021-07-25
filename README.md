@@ -15,7 +15,7 @@ Add to your `build->plugins` section (default phase is `initialize` phase)
 <plugin>
     <groupId>io.github.shomeier</groupId>
     <artifactId>openapi-util-maven-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <executions>
         <execution>
             <goals>
@@ -129,7 +129,7 @@ This plugin is bound to phase 'initialize' which comes before 'generate-sources'
 <plugin>
     <groupId>io.github.shomeier</groupId>
     <artifactId>openapi-util-maven-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <executions>
         <execution>
             <goals>
