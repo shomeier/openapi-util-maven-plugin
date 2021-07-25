@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -49,6 +50,7 @@ public class Merger {
         // .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
         // .enable(YAMLGenerator.Feature.ALWAYS_QUOTE_NUMBERS_AS_STRINGS);
 
+        Map<String, PathItem> allPaths = new HashMap<>();
         for (Entry<Path, OpenAPI> filePathEntry : filePaths.entrySet()) {
 
             Paths paths = filePathEntry.getValue().getPaths();
@@ -62,9 +64,17 @@ public class Merger {
                     if (!expandPaths) {
                         pathItem = new PathItem().$ref(ref);
                     }
-                    target.path(sourcePaths.getKey(), pathItem);
+                    allPaths.put(sourcePaths.getKey(), pathItem);
                 }
             }
+        }
+
+        List<String> sortedPathKeys = allPaths.keySet().stream()
+                .sorted()
+                .collect(Collectors.toList());
+
+        for (String pathKey : sortedPathKeys) {
+            target.path(pathKey, allPaths.get(pathKey));
         }
 
         String pathsString = Yaml.pretty().writeValueAsString(target);
