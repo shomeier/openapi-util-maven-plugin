@@ -11,7 +11,7 @@
   <packaging>maven-plugin</packaging>
 
   <name>openapi-util-maven-plugin Maven Plugin</name>
-
+  <description>A Maven plugin to merge OpenAPI paths from multiple yaml files into a single one</description>
   <url>https://github.com/shomeier/openapi-util-maven-plugin</url>
 
   <prerequisites>
