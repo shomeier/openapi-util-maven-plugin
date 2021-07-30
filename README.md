@@ -122,7 +122,7 @@ paths:
 ```
 ## Using in conjunction with openapi-generator-maven-plugin
 
-You can then process the output further by for example passing it as <inputSpec> for the [openapi-generator-maven-plugin](https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-maven-plugin/README.md).
+You can then process the output further by for example passing it as \<inputSpec\> for the [openapi-generator-maven-plugin](https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-maven-plugin/README.md).
 This plugin is bound to phase 'initialize' which comes before 'generate-sources' to which the openapi-generator plugin is bound to:
 
 ```xml
@@ -151,7 +151,7 @@ This plugin is bound to phase 'initialize' which comes before 'generate-sources'
 <plugin>
     <groupId>org.openapitools</groupId>
     <artifactId>openapi-generator-maven-plugin</artifactId>
-    <version>5.1.0</version>
+    <version>5.2.0</version>
     <executions>
         <execution>
             <goals>
