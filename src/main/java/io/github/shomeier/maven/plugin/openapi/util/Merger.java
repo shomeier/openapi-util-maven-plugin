@@ -19,15 +19,16 @@ import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.parser.ObjectMapperFactory;
 import io.swagger.v3.parser.OpenAPIV3Parser;
+import io.swagger.v3.parser.core.models.ParseOptions;
 
 public class Merger {
 
     private final File outputFile;
-    private final boolean expandPaths;
+    private final boolean resolveFully;
 
-    public Merger(File outputFile, boolean expandPaths) {
+    public Merger(File outputFile, boolean resolveFully) {
         this.outputFile = outputFile;
-        this.expandPaths = expandPaths;
+        this.resolveFully = resolveFully;
     }
 
     public void merge(List<Path> includedFiles) throws IOException {
@@ -38,12 +39,16 @@ public class Merger {
     }
 
     private OpenAPI parse(Path path) {
-        return new OpenAPIV3Parser().read(path.toString());
+        final ParseOptions options = new ParseOptions();
+        options.setResolve(true);
+        options.setResolveFully(resolveFully);
+
+        return new OpenAPIV3Parser().read(path.toString(), null, options);
     }
 
     private void merge(Path targetFile, Map<Path, OpenAPI> filePaths) throws IOException {
 
-        OpenAPI target = new OpenAPIV3Parser().read(targetFile.toString());
+        OpenAPI target = parse(targetFile);
 
         // JsonFactory factory = Yaml.mapper().getFactory();
         // factory.disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
@@ -61,7 +66,7 @@ public class Merger {
                     Path relativePath = targetFile.getParent().relativize(filePathEntry.getKey());
                     String ref = buildRef(relativePath, sourcePaths.getKey());
                     PathItem pathItem = sourcePaths.getValue();
-                    if (!expandPaths) {
+                    if (!resolveFully) {
                         pathItem = new PathItem().$ref(ref);
                     }
                     allPaths.put(sourcePaths.getKey(), pathItem);

@@ -97,7 +97,7 @@ components:
     Stores:
       type: array
       items:
-        $ref: "#/components/schemas/Stores"
+        $ref: "#/components/schemas/Store"
     Error:
       type: object
       required:
