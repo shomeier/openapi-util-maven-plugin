@@ -15,7 +15,7 @@ Add to your `build->plugins` section (default phase is `initialize` phase)
 <plugin>
     <groupId>io.github.shomeier</groupId>
     <artifactId>openapi-util-maven-plugin</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <executions>
         <execution>
             <goals>
@@ -120,6 +120,34 @@ paths:
   /stores/{storeId}:
     $ref: "./paths/stores.yaml#/paths/~1stores~1{storeId}"
 ```
+### Expand/Resolve Paths
+
+You also have the option to fully resolve the paths references. Full resolving in this case means all $refs are dereferenced (no external or internal reference to #components left).
+You can switch this feature on by setting ```resolveFully``` to true:
+```xml
+<plugin>
+    <groupId>io.github.shomeier</groupId>
+    <artifactId>openapi-util-maven-plugin</artifactId>
+    <version>1.1.0</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>merge</goal>
+            </goals>
+            <configuration>
+                <headerFile>${project.basedir}/src/main/resources/header.yaml<headerFile>
+                <resources>
+                  <resource>
+                    <directory>${project.basedir}/src/main/resources/paths</directory>
+                  </resource>
+                </resources>
+                <outputFile>${project.build.directory}/merged.yaml</outputFile>
+                <resolveFully>true<resolveFully>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
 ## Using in conjunction with openapi-generator-maven-plugin
 
 You can then process the output further by for example passing it as \<inputSpec\> for the [openapi-generator-maven-plugin](https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-maven-plugin/README.md).
@@ -129,7 +157,7 @@ This plugin is bound to phase 'initialize' which comes before 'generate-sources'
 <plugin>
     <groupId>io.github.shomeier</groupId>
     <artifactId>openapi-util-maven-plugin</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <executions>
         <execution>
             <goals>
