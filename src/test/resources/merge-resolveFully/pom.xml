@@ -26,6 +26,7 @@
           <outputFile>
             ${project.basedir}/src/main/resources/output.yaml
           </outputFile>
+          <resolveFully>true</resolveFully>
         </configuration>
       </plugin>
     </plugins>
