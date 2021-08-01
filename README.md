@@ -123,7 +123,7 @@ paths:
 ### Expand/Resolve Paths
 
 You also have the option to fully resolve the paths references. Full resolving in this case means all $refs are dereferenced (no external or internal reference to #components left).
-You can switch this feature on by setting ```resolveFully``` to true:
+You can switch this feature on by setting ```resolveFully``` to true (be aware that there are issues with circular refs):
 ```xml
 <plugin>
     <groupId>io.github.shomeier</groupId>
