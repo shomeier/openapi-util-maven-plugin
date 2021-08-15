@@ -129,8 +129,7 @@ This will resolve the path references while for example schemas are stored in th
 #### ```<resolveFully>true<resolveFully>```
 This will fully resolve the path and all other references.
 Full resolving in this case means all $refs are dereferenced (no external or internal reference to #components left).
-
-You also have the option to fully resolve the paths references. Full resolving in this case means all $refs are dereferenced (no external or internal reference to #components left). The feature is described in detail [here](https://github.com/swagger-api/swagger-parser#2-resolvefully).
+The feature is described in detail [here](https://github.com/swagger-api/swagger-parser#2-resolvefully).
 
 ## Using in conjunction with openapi-generator-maven-plugin
 
