@@ -122,32 +122,16 @@ paths:
 ```
 ### Expand/Resolve Paths
 
-You also have the option to fully resolve the paths references. Full resolving in this case means all $refs are dereferenced (no external or internal reference to #components left).
-You can switch this feature on by setting ```resolveFully``` to true (be aware that there are issues with circular refs):
-```xml
-<plugin>
-    <groupId>io.github.shomeier</groupId>
-    <artifactId>openapi-util-maven-plugin</artifactId>
-    <version>1.1.0</version>
-    <executions>
-        <execution>
-            <goals>
-                <goal>merge</goal>
-            </goals>
-            <configuration>
-                <headerFile>${project.basedir}/src/main/resources/header.yaml<headerFile>
-                <resources>
-                  <resource>
-                    <directory>${project.basedir}/src/main/resources/paths</directory>
-                  </resource>
-                </resources>
-                <outputFile>${project.build.directory}/merged.yaml</outputFile>
-                <resolveFully>true<resolveFully>
-            </configuration>
-        </execution>
-    </executions>
-</plugin>
-```
+You also have the option to resolve the path references, either partial or fully:
+#### ```<resolve>true<resolve>```
+This will resolve the path references while for example schemas are stored in the local components section in the output file. This feature is described in detail [here](https://github.com/swagger-api/swagger-parser#1-resolve).
+
+#### ```<resolveFully>true<resolveFully>```
+This will fully resolve the path and all other references.
+Full resolving in this case means all $refs are dereferenced (no external or internal reference to #components left).
+
+You also have the option to fully resolve the paths references. Full resolving in this case means all $refs are dereferenced (no external or internal reference to #components left). The feature is described in detail [here](https://github.com/swagger-api/swagger-parser#2-resolvefully).
+
 ## Using in conjunction with openapi-generator-maven-plugin
 
 You can then process the output further by for example passing it as \<inputSpec\> for the [openapi-generator-maven-plugin](https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-maven-plugin/README.md).
@@ -171,6 +155,7 @@ This plugin is bound to phase 'initialize' which comes before 'generate-sources'
                   </resource>
                 </resources>
                 <outputFile>${project.build.directory}/merged.yaml</outputFile>
+                <resolve>true</resolve>
             </configuration>
         </execution>
     </executions>
