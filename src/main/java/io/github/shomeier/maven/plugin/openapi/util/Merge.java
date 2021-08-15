@@ -31,6 +31,9 @@ public class Merge extends AbstractMojo {
     private File outputFile;
 
     @Parameter(defaultValue = "false", required = false)
+    private boolean resolve;
+
+    @Parameter(defaultValue = "false", required = false)
     private boolean resolveFully;
 
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
@@ -45,7 +48,7 @@ public class Merge extends AbstractMojo {
             ResourcesResolver resolver = new ResourcesResolver(resources, project, getLog());
             List<Path> includedFiles = resolver.getIncludedFiles();
 
-            Merger merger = new Merger(outputFile, resolveFully);
+            Merger merger = new Merger(outputFile, getResolveOption());
             merger.merge(includedFiles);
 
         } catch (IOException e) {
@@ -56,5 +59,17 @@ public class Merge extends AbstractMojo {
     private void validateParameters() throws MojoExecutionException {
         Validator.validateFile(headerFile, "headerFile");
         Validator.validateParam(outputFile, "outputFile");
+    }
+
+    private ResolveOption getResolveOption() {
+        if (resolveFully) {
+            return ResolveOption.RESOLVE_FULLY;
+        }
+
+        if (resolve) {
+            return ResolveOption.RESOLVE;
+        }
+
+        return ResolveOption.NO_RESOLVE;
     }
 }
