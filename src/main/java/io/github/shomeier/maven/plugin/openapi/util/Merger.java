@@ -14,7 +14,9 @@ import org.apache.commons.io.FileUtils;
 import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.PathItem.HttpMethod;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.parser.OpenAPIV3Parser;
 import io.swagger.v3.parser.core.models.ParseOptions;
@@ -23,10 +25,12 @@ public class Merger {
 
     private final File outputFile;
     private final ResolveOption resolveOption;
+    private String exclude;
 
-    public Merger(File outputFile, ResolveOption resolveFully) {
+    public Merger(File outputFile, ResolveOption resolveFully, String exclude) {
         this.outputFile = outputFile;
         this.resolveOption = resolveFully;
+        this.exclude = exclude;
     }
 
     public void merge(List<Path> includedFiles) throws IOException {
@@ -97,6 +101,15 @@ public class Merger {
                 if (resolveOption.equals(ResolveOption.NO_RESOLVE)) {
                     String ref = buildRef(relativePath, sourcePaths.getKey());
                     pathItem = new PathItem().$ref(ref);
+                } else if ((exclude != null) && (!exclude.trim().isEmpty())) {
+                    Map<HttpMethod, Operation> operationsMap = pathItem.readOperationsMap();
+                    Map<HttpMethod, Operation> excludedOperations = operationsMap.entrySet().stream()
+                            .filter(e -> Util.withNonNull(e.getValue().getExtensions(),
+                                    d -> d.keySet().stream().anyMatch(k -> k.matches(exclude)), false))
+                            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+                    for (Entry<HttpMethod, Operation> excludedOperation : excludedOperations.entrySet()) {
+                        pathItem.operation(excludedOperation.getKey(), null);
+                    }
                 }
                 allPaths.put(sourcePaths.getKey(), pathItem);
             }

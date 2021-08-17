@@ -36,6 +36,9 @@ public class Merge extends AbstractMojo {
     @Parameter(defaultValue = "false", required = false)
     private boolean resolveFully;
 
+    @Parameter(defaultValue = "false", required = false)
+    private String exclude;
+
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
     protected MavenSession session;
 
@@ -48,7 +51,7 @@ public class Merge extends AbstractMojo {
             ResourcesResolver resolver = new ResourcesResolver(resources, project, getLog());
             List<Path> includedFiles = resolver.getIncludedFiles();
 
-            Merger merger = new Merger(outputFile, getResolveOption());
+            Merger merger = new Merger(outputFile, getResolveOption(), exclude);
             merger.merge(includedFiles);
 
         } catch (IOException e) {
