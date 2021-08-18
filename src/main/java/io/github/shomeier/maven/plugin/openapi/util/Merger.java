@@ -2,7 +2,6 @@ package io.github.shomeier.maven.plugin.openapi.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -10,13 +9,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import org.apache.commons.io.FileUtils;
-import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
-import io.swagger.v3.oas.models.PathItem.HttpMethod;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.parser.OpenAPIV3Parser;
 import io.swagger.v3.parser.core.models.ParseOptions;
@@ -25,22 +20,20 @@ public class Merger {
 
     private final File outputFile;
     private final ResolveOption resolveOption;
-    private String exclude;
 
-    public Merger(File outputFile, ResolveOption resolveFully, String exclude) {
+    public Merger(File outputFile, ResolveOption resolveFully) {
         this.outputFile = outputFile;
         this.resolveOption = resolveFully;
-        this.exclude = exclude;
     }
 
-    public void merge(List<Path> includedFiles) throws IOException {
+    public OpenAPI merge(List<Path> includedFiles) throws IOException {
         Map<Path, OpenAPI> filePaths = includedFiles.stream()
                 .collect(Collectors.toMap(p -> p, this::parse));
 
-        merge(outputFile.toPath(), filePaths);
+        return merge(outputFile.toPath(), filePaths);
     }
 
-    private void merge(Path targetFile, Map<Path, OpenAPI> filePaths) throws IOException {
+    private OpenAPI merge(Path targetFile, Map<Path, OpenAPI> filePaths) throws IOException {
 
         OpenAPI target = parse(targetFile);
 
@@ -68,8 +61,7 @@ public class Merger {
             target.path(pathKey, allPaths.get(pathKey));
         }
 
-        String pathsString = Yaml.pretty().writeValueAsString(target);
-        FileUtils.writeStringToFile(targetFile.toFile(), pathsString, Charset.defaultCharset(), false);
+        return target;
     }
 
     private OpenAPI parse(Path path) {
@@ -101,15 +93,6 @@ public class Merger {
                 if (resolveOption.equals(ResolveOption.NO_RESOLVE)) {
                     String ref = buildRef(relativePath, sourcePaths.getKey());
                     pathItem = new PathItem().$ref(ref);
-                } else if ((exclude != null) && (!exclude.trim().isEmpty())) {
-                    Map<HttpMethod, Operation> operationsMap = pathItem.readOperationsMap();
-                    Map<HttpMethod, Operation> excludedOperations = operationsMap.entrySet().stream()
-                            .filter(e -> Util.withNonNull(e.getValue().getExtensions(),
-                                    d -> d.keySet().stream().anyMatch(k -> k.matches(exclude)), false))
-                            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-                    for (Entry<HttpMethod, Operation> excludedOperation : excludedOperations.entrySet()) {
-                        pathItem.operation(excludedOperation.getKey(), null);
-                    }
                 }
                 allPaths.put(sourcePaths.getKey(), pathItem);
             }

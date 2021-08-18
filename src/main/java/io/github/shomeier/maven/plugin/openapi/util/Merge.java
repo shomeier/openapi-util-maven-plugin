@@ -2,6 +2,7 @@ package io.github.shomeier.maven.plugin.openapi.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -13,6 +14,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import io.swagger.v3.core.util.Yaml;
+import io.swagger.v3.oas.models.OpenAPI;
 
 @Mojo(name = Merge.GOAL, defaultPhase = LifecyclePhase.INITIALIZE)
 public class Merge extends AbstractMojo {
@@ -51,9 +54,14 @@ public class Merge extends AbstractMojo {
             ResourcesResolver resolver = new ResourcesResolver(resources, project, getLog());
             List<Path> includedFiles = resolver.getIncludedFiles();
 
-            Merger merger = new Merger(outputFile, getResolveOption(), exclude);
-            merger.merge(includedFiles);
+            Merger merger = new Merger(outputFile, getResolveOption());
+            OpenAPI mergedApi = merger.merge(includedFiles);
 
+            Excluder excluder = new Excluder(exclude);
+            excluder.exclude(mergedApi);
+
+            String yamlAsString = Yaml.pretty().writeValueAsString(mergedApi);
+            FileUtils.writeStringToFile(outputFile, yamlAsString, Charset.defaultCharset(), false);
         } catch (IOException e) {
             throw new MojoExecutionException("Error while merging", e);
         }
