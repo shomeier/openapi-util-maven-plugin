@@ -28,7 +28,7 @@ public class ResourcesResolver {
         this.log = log;
     }
 
-    List<Path> getIncludedFiles() {
+    public List<Path> getIncludedFiles() {
 
         List<Path> includedFiles = new ArrayList<>();
 

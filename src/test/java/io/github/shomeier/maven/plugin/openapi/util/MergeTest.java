@@ -47,8 +47,10 @@ public class MergeTest {
     }
 
     @Test
-    public void testMergeIncludes() throws Exception {
-        File pom = new File("target/test-classes/merge-includes");
+    public void testMergeResourcesIncludes() throws Exception {
+
+        String prjFolder = "merge-resources-includes";
+        File pom = new File("target/test-classes/" + prjFolder);
         assertNotNull(pom);
         assertTrue(pom.exists());
 
@@ -62,15 +64,16 @@ public class MergeTest {
 
         ClassLoader classLoader = getClass().getClassLoader();
         File expectedFile = new File(classLoader
-                .getResource("merge-includes/src/main/resources/expectedOutput.yaml").getFile());
+                .getResource(prjFolder + "/src/main/resources/expectedOutput.yaml").getFile());
         assertEquals("The files differ!",
                 FileUtils.readFileToString(expectedFile, "utf-8"),
                 FileUtils.readFileToString(outputFile, "utf-8"));
     }
 
     @Test
-    public void testMergeExcludes() throws Exception {
-        File pom = new File("target/test-classes/merge-excludes");
+    public void testMergeResourcesExcludes() throws Exception {
+        String prjFolder = "merge-resources-excludes";
+        File pom = new File("target/test-classes/" + prjFolder);
         assertNotNull(pom);
         assertTrue(pom.exists());
 
@@ -84,7 +87,8 @@ public class MergeTest {
 
         ClassLoader classLoader = getClass().getClassLoader();
         File expectedFile = new File(classLoader
-                .getResource("merge-excludes/src/main/resources/expectedOutput.yaml").getFile());
+                .getResource(prjFolder + "/src/main/resources/expectedOutput.yaml")
+                .getFile());
         assertEquals("The files differ!",
                 FileUtils.readFileToString(expectedFile, "utf-8"),
                 FileUtils.readFileToString(outputFile, "utf-8"));
@@ -106,7 +110,7 @@ public class MergeTest {
         assertNotNull(outputFile);
         assertTrue(outputFile.exists());
 
-        // the order of the schema components is not guaranteed 
+        // the order of the schema components is not guaranteed
         ParseOptions options = new ParseOptions();
         options.setResolve(true);
         OpenAPI openApi = new OpenAPIV3Parser().read(outputFile.getAbsolutePath(), null, options);
@@ -136,6 +140,28 @@ public class MergeTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File expectedFile = new File(classLoader
                 .getResource(prjName + "/src/main/resources/expectedOutput.yaml").getFile());
+        assertEquals("The files differ!",
+                FileUtils.readFileToString(expectedFile, "utf-8"),
+                FileUtils.readFileToString(outputFile, "utf-8"));
+    }
+
+    @Test
+    public void testMergeExclude() throws Exception {
+        File pom = new File("target/test-classes/merge-exclude");
+        assertNotNull(pom);
+        assertTrue(pom.exists());
+
+        Merge myMojo = (Merge) rule.lookupConfiguredMojo(pom, "merge");
+        assertNotNull(myMojo);
+        myMojo.execute();
+
+        File outputFile = (File) rule.getVariableValueFromObject(myMojo, "outputFile");
+        assertNotNull(outputFile);
+        assertTrue(outputFile.exists());
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        File expectedFile = new File(classLoader
+                .getResource("merge-exclude/src/main/resources/expectedOutput.yaml").getFile());
         assertEquals("The files differ!",
                 FileUtils.readFileToString(expectedFile, "utf-8"),
                 FileUtils.readFileToString(outputFile, "utf-8"));
