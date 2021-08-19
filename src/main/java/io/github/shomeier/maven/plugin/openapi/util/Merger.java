@@ -19,11 +19,9 @@ import io.swagger.v3.parser.core.models.ParseOptions;
 public class Merger {
 
     private final File outputFile;
-    private final ResolveOption resolveOption;
 
-    public Merger(File outputFile, ResolveOption resolveFully) {
+    public Merger(File outputFile) {
         this.outputFile = outputFile;
-        this.resolveOption = resolveFully;
     }
 
     public OpenAPI merge(List<Path> includedFiles) throws IOException {
@@ -42,17 +40,14 @@ public class Merger {
         for (Entry<Path, OpenAPI> filePathEntry : filePaths.entrySet()) {
 
             OpenAPI openApi = filePathEntry.getValue();
-            if (resolveOption.equals(ResolveOption.RESOLVE)) {
-                mergeComponents(allComponents, openApi.getComponents());
-            }
+            mergeComponents(allComponents, openApi.getComponents());
 
             mergePaths(allPaths, targetFile, filePathEntry);
         }
 
-        if (resolveOption.equals(ResolveOption.RESOLVE)) {
-            target.components(allComponents);
-        }
+        target.components(allComponents);
 
+        // TODO: sort in Yaml Resolver
         List<String> sortedPathKeys = allPaths.keySet().stream()
                 .sorted()
                 .collect(Collectors.toList());
@@ -66,13 +61,7 @@ public class Merger {
 
     private OpenAPI parse(Path path) {
         final ParseOptions options = new ParseOptions();
-
-        if (resolveOption.equals(ResolveOption.RESOLVE)) {
-            options.setResolve(true);
-        } else if (resolveOption.equals(ResolveOption.RESOLVE_FULLY)) {
-            options.setResolve(true);
-            options.setResolveFully(true);
-        }
+        options.setResolve(false);
 
         return new OpenAPIV3Parser().read(path.toString(), null, options);
     }
@@ -87,13 +76,12 @@ public class Merger {
         if (paths != null) {
             for (Entry<String, PathItem> sourcePaths : paths.entrySet()) {
 
+                PathItem pathItem = sourcePaths.getValue();
                 // relativize assumes the path is a directory that is why we need to relativize from parent
                 Path relativePath = targetFile.getParent().relativize(filePathEntry.getKey());
-                PathItem pathItem = sourcePaths.getValue();
-                if (resolveOption.equals(ResolveOption.NO_RESOLVE)) {
-                    String ref = buildRef(relativePath, sourcePaths.getKey());
-                    pathItem = new PathItem().$ref(ref);
-                }
+                String ref = buildRef(relativePath, sourcePaths.getKey());
+                pathItem.addExtension("x-openapi-util-ref", ref);
+                // TODO: Log Warning that duplicate paths might exist
                 allPaths.put(sourcePaths.getKey(), pathItem);
             }
         }

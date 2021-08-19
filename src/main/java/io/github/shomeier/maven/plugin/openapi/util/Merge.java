@@ -51,16 +51,17 @@ public class Merge extends AbstractMojo {
         try {
             FileUtils.copyFile(headerFile, outputFile);
 
-            ResourcesResolver resolver = new ResourcesResolver(resources, project, getLog());
-            List<Path> includedFiles = resolver.getIncludedFiles();
+            List<Path> includedFiles = new ResourcesResolver(resources, project, getLog())
+                    .getIncludedFiles();
 
-            Merger merger = new Merger(outputFile, getResolveOption());
-            OpenAPI mergedApi = merger.merge(includedFiles);
+            OpenAPI mergedApi = new Merger(outputFile)
+                    .merge(includedFiles);
 
-            Excluder excluder = new Excluder(exclude);
-            excluder.exclude(mergedApi);
+            new Excluder(exclude).exclude(mergedApi);
+            OpenAPI resolvedApi = new YamlResolver(getResolveOption())
+                    .resolve(mergedApi);
 
-            String yamlAsString = Yaml.pretty().writeValueAsString(mergedApi);
+            String yamlAsString = Yaml.pretty().writeValueAsString(resolvedApi);
             FileUtils.writeStringToFile(outputFile, yamlAsString, Charset.defaultCharset(), false);
         } catch (IOException e) {
             throw new MojoExecutionException("Error while merging", e);

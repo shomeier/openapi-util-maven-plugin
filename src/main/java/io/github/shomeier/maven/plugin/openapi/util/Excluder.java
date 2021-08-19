@@ -18,7 +18,7 @@ public class Excluder {
         this.exclude = exclude;
     }
 
-    public void exclude(OpenAPI openApi) {
+    public OpenAPI exclude(OpenAPI openApi) {
 
         if ((exclude != null) && (!exclude.trim().isEmpty())) {
             for (Entry<String, PathItem> pathEntry : openApi.getPaths().entrySet()) {
@@ -31,7 +31,7 @@ public class Excluder {
             }
         }
 
-        removeEmptyPaths(openApi);
+        return removeEmptyPaths(openApi);
     }
 
     private Map<HttpMethod, Operation> findOperationsToExclude(PathItem pathItem) {
@@ -42,12 +42,14 @@ public class Excluder {
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
 
-    private void removeEmptyPaths(OpenAPI openApi) {
+    private OpenAPI removeEmptyPaths(OpenAPI openApi) {
         Paths paths = openApi.getPaths();
         List<String> pathsToRemove = paths.entrySet().stream()
                 .filter(e -> e.getValue().readOperations().isEmpty())
                 .map(Entry::getKey)
                 .collect(Collectors.toList());
         pathsToRemove.forEach(paths::remove);
+
+        return openApi;
     }
 }
