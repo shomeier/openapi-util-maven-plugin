@@ -69,8 +69,8 @@ public class MergeTest {
     }
 
     @Test
-    public void testMergeExcludes() throws Exception {
-        File pom = new File("target/test-classes/merge-excludes");
+    public void testMergeResourcesExcludes() throws Exception {
+            File pom = new File("target/test-classes/merge-resources-excludes");
         assertNotNull(pom);
         assertTrue(pom.exists());
 
@@ -84,7 +84,7 @@ public class MergeTest {
 
         ClassLoader classLoader = getClass().getClassLoader();
         File expectedFile = new File(classLoader
-                .getResource("merge-excludes/src/main/resources/expectedOutput.yaml").getFile());
+                        .getResource("merge-resources-excludes/src/main/resources/expectedOutput.yaml").getFile());
         assertEquals("The files differ!",
                 FileUtils.readFileToString(expectedFile, "utf-8"),
                 FileUtils.readFileToString(outputFile, "utf-8"));
