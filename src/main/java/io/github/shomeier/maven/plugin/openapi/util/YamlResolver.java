@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.parser.OpenAPIV3Parser;
 import io.swagger.v3.parser.core.models.ParseOptions;
 
@@ -26,6 +27,7 @@ public class YamlResolver {
         }
 
         removeRefs(resultApi);
+        sortPaths(resultApi);
         return resultApi;
     }
 
@@ -58,5 +60,16 @@ public class YamlResolver {
         openApi.getPaths().values()
                 .forEach(p -> Optional.ofNullable(p.getExtensions()).ifPresent(e -> e.remove("x-openapi-util-ref")));
         return openApi;
+    }
+
+    private OpenAPI sortPaths(OpenAPI openApi) {
+
+        Paths oldPaths = openApi.getPaths();
+        Paths sortedPaths = new Paths();
+        oldPaths.keySet().stream()
+                .sorted()
+                .forEach(k -> sortedPaths.put(k, oldPaths.get(k)));
+
+        return openApi.paths(sortedPaths);
     }
 }

@@ -46,15 +46,7 @@ public class Merger {
         }
 
         target.components(allComponents);
-
-        // TODO: sort in Yaml Resolver
-        List<String> sortedPathKeys = allPaths.keySet().stream()
-                .sorted()
-                .collect(Collectors.toList());
-
-        for (String pathKey : sortedPathKeys) {
-            target.path(pathKey, allPaths.get(pathKey));
-        }
+        allPaths.entrySet().forEach(e -> target.path(e.getKey(), e.getValue()));
 
         return target;
     }
