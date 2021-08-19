@@ -131,6 +131,24 @@ This will fully resolve the path and all other references.
 Full resolving in this case means all $refs are dereferenced (no external or internal reference to #components left).
 The feature is described in detail [here](https://github.com/swagger-api/swagger-parser#2-resolvefully).
 
+### Exclude Operations
+
+You can exclude operations which have a marker in form of an OpenAPI extension set:
+```yaml
+...
+/pets/{petId}:
+    get:
+      x-amazon-internal:
+      summary: Info for a specific pet
+      operationId: showPetById
+    ...
+    post:
+      x-google-internal:
+      summary: Create a pet
+      operationId: createPets
+```
+Both operations will be excluded from the ouptut file via the following regex:
+```<exclude>x-\w*-internal</exclude>```
 ## Using in conjunction with openapi-generator-maven-plugin
 
 You can then process the output further by for example passing it as \<inputSpec\> for the [openapi-generator-maven-plugin](https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-maven-plugin/README.md).
