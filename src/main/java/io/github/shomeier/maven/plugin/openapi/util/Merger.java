@@ -72,7 +72,7 @@ public class Merger {
                 // relativize assumes the path is a directory that is why we need to relativize from parent
                 Path relativePath = targetFile.getParent().relativize(filePathEntry.getKey());
                 String ref = buildRef(relativePath, sourcePaths.getKey());
-                pathItem.addExtension("x-openapi-util-ref", ref);
+                pathItem.addExtension(Constants.INTERNAL_REF_EXTENSION, ref);
                 // TODO: Log Warning that duplicate paths might exist
                 allPaths.put(sourcePaths.getKey(), pathItem);
             }

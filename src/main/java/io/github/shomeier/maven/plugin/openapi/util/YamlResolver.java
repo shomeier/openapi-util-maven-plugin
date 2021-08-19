@@ -46,7 +46,7 @@ public class YamlResolver {
     }
 
     private PathItem ref(PathItem pathItem) {
-        return new PathItem().$ref((String) pathItem.getExtensions().get("x-openapi-util-ref"));
+        return new PathItem().$ref((String) pathItem.getExtensions().get(Constants.INTERNAL_REF_EXTENSION));
     }
 
     private OpenAPI flattenPaths(OpenAPI openApi) {
@@ -58,7 +58,8 @@ public class YamlResolver {
     private OpenAPI removeRefs(OpenAPI openApi) {
 
         openApi.getPaths().values()
-                .forEach(p -> Optional.ofNullable(p.getExtensions()).ifPresent(e -> e.remove("x-openapi-util-ref")));
+                .forEach(p -> Optional.ofNullable(p.getExtensions())
+                        .ifPresent(e -> e.remove(Constants.INTERNAL_REF_EXTENSION)));
         return openApi;
     }
 
