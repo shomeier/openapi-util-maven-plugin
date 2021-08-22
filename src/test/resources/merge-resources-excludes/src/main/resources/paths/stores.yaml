@@ -58,7 +58,7 @@ paths:
       summary: Info for a specific store
       operationId: showStoreById
       tags:
-        - store
+        - stores
       parameters:
         - name: storeId
           in: path
