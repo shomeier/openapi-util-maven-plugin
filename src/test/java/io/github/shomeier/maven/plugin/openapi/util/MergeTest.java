@@ -9,9 +9,6 @@ import org.apache.maven.plugin.testing.MojoRule;
 import org.apache.maven.plugin.testing.WithoutMojo;
 import org.junit.Rule;
 import org.junit.Test;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.parser.OpenAPIV3Parser;
-import io.swagger.v3.parser.core.models.ParseOptions;
 
 public class MergeTest {
 
@@ -26,30 +23,48 @@ public class MergeTest {
 
     @Test
     public void testMergeSimple() throws Exception {
-        File pom = new File("target/test-classes/merge-simple");
-        assertNotNull(pom);
-        assertTrue(pom.exists());
-
-        Merge myMojo = (Merge) rule.lookupConfiguredMojo(pom, "merge");
-        assertNotNull(myMojo);
-        myMojo.execute();
-
-        File outputFile = (File) rule.getVariableValueFromObject(myMojo, "outputFile");
-        assertNotNull(outputFile);
-        assertTrue(outputFile.exists());
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        File expectedFile = new File(classLoader
-                .getResource("merge-simple/src/main/resources/expectedOutput.yaml").getFile());
-        assertEquals("The files differ!",
-                FileUtils.readFileToString(expectedFile, "utf-8"),
-                FileUtils.readFileToString(outputFile, "utf-8"));
+        testProject("merge-simple");
     }
 
     @Test
     public void testMergeResourcesIncludes() throws Exception {
+        testProject("merge-resources-includes");
+    }
 
-        String prjFolder = "merge-resources-includes";
+    @Test
+    public void testMergeResourcesExcludes() throws Exception {
+        testProject("merge-resources-excludes");
+    }
+
+    @Test
+    public void testMergeResolve() throws Exception {
+        testProject("merge-resolve");
+    }
+
+    @Test
+    public void testMergeResolveFully() throws Exception {
+        testProject("merge-resolveFully");
+    }
+
+    @Test
+    public void testMergeExclude() throws Exception {
+        testProject("merge-exclude");
+    }
+
+    @Test
+    public void testMergeTransform() throws Exception {
+        testProject("merge-transform");
+    }
+
+    /** Do not need the MojoRule. */
+    @WithoutMojo
+    @Test
+    public void testSomethingWhichDoesNotNeedTheMojoAndProbablyShouldBeExtractedIntoANewClassOfItsOwn() {
+        assertTrue(true);
+    }
+
+    private void testProject(String prjFolder) throws Exception {
+
         File pom = new File("target/test-classes/" + prjFolder);
         assertNotNull(pom);
         assertTrue(pom.exists());
@@ -68,134 +83,6 @@ public class MergeTest {
         assertEquals("The files differ!",
                 FileUtils.readFileToString(expectedFile, "utf-8"),
                 FileUtils.readFileToString(outputFile, "utf-8"));
-    }
-
-    @Test
-    public void testMergeResourcesExcludes() throws Exception {
-        String prjFolder = "merge-resources-excludes";
-        File pom = new File("target/test-classes/" + prjFolder);
-        assertNotNull(pom);
-        assertTrue(pom.exists());
-
-        Merge myMojo = (Merge) rule.lookupConfiguredMojo(pom, "merge");
-        assertNotNull(myMojo);
-        myMojo.execute();
-
-        File outputFile = (File) rule.getVariableValueFromObject(myMojo, "outputFile");
-        assertNotNull(outputFile);
-        assertTrue(outputFile.exists());
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        File expectedFile = new File(classLoader
-                .getResource(prjFolder + "/src/main/resources/expectedOutput.yaml")
-                .getFile());
-        assertEquals("The files differ!",
-                FileUtils.readFileToString(expectedFile, "utf-8"),
-                FileUtils.readFileToString(outputFile, "utf-8"));
-    }
-
-    @Test
-    public void testMergeResolve() throws Exception {
-
-        String prjName = "merge-resolve";
-        File pom = new File("target/test-classes/" + prjName);
-        assertNotNull(pom);
-        assertTrue(pom.exists());
-
-        Merge myMojo = (Merge) rule.lookupConfiguredMojo(pom, "merge");
-        assertNotNull(myMojo);
-        myMojo.execute();
-
-        File outputFile = (File) rule.getVariableValueFromObject(myMojo, "outputFile");
-        assertNotNull(outputFile);
-        assertTrue(outputFile.exists());
-
-        // the order of the schema components is not guaranteed
-        ParseOptions options = new ParseOptions();
-        options.setResolve(true);
-        OpenAPI openApi = new OpenAPIV3Parser().read(outputFile.getAbsolutePath(), null, options);
-        assertTrue(openApi.getComponents().getSchemas().containsKey("Store"));
-        assertTrue(openApi.getComponents().getSchemas().containsKey("Stores"));
-        assertTrue(openApi.getComponents().getSchemas().containsKey("Pet"));
-        assertTrue(openApi.getComponents().getSchemas().containsKey("Pets"));
-        assertTrue(openApi.getComponents().getSchemas().containsKey("Error"));
-    }
-
-    @Test
-    public void testMergeResolveFully() throws Exception {
-
-        String prjName = "merge-resolveFully";
-        File pom = new File("target/test-classes/" + prjName);
-        assertNotNull(pom);
-        assertTrue(pom.exists());
-
-        Merge myMojo = (Merge) rule.lookupConfiguredMojo(pom, "merge");
-        assertNotNull(myMojo);
-        myMojo.execute();
-
-        File outputFile = (File) rule.getVariableValueFromObject(myMojo, "outputFile");
-        assertNotNull(outputFile);
-        assertTrue(outputFile.exists());
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        File expectedFile = new File(classLoader
-                .getResource(prjName + "/src/main/resources/expectedOutput.yaml").getFile());
-        assertEquals("The files differ!",
-                FileUtils.readFileToString(expectedFile, "utf-8"),
-                FileUtils.readFileToString(outputFile, "utf-8"));
-    }
-
-    @Test
-    public void testMergeExclude() throws Exception {
-        File pom = new File("target/test-classes/merge-exclude");
-        assertNotNull(pom);
-        assertTrue(pom.exists());
-
-        Merge myMojo = (Merge) rule.lookupConfiguredMojo(pom, "merge");
-        assertNotNull(myMojo);
-        myMojo.execute();
-
-        File outputFile = (File) rule.getVariableValueFromObject(myMojo, "outputFile");
-        assertNotNull(outputFile);
-        assertTrue(outputFile.exists());
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        File expectedFile = new File(classLoader
-                .getResource("merge-exclude/src/main/resources/expectedOutput.yaml").getFile());
-        assertEquals("The files differ!",
-                FileUtils.readFileToString(expectedFile, "utf-8"),
-                FileUtils.readFileToString(outputFile, "utf-8"));
-    }
-
-    @Test
-    public void testMergeTransform() throws Exception {
-
-        String prjName = "merge-transform";
-        File pom = new File("target/test-classes/" + prjName);
-        assertNotNull(pom);
-        assertTrue(pom.exists());
-
-        Merge myMojo = (Merge) rule.lookupConfiguredMojo(pom, "merge");
-        assertNotNull(myMojo);
-        myMojo.execute();
-
-        File outputFile = (File) rule.getVariableValueFromObject(myMojo, "outputFile");
-        assertNotNull(outputFile);
-        assertTrue(outputFile.exists());
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        File expectedFile = new File(classLoader
-                .getResource(prjName + "/src/main/resources/expectedOutput.yaml").getFile());
-        assertEquals("The files differ!",
-                FileUtils.readFileToString(expectedFile, "utf-8"),
-                FileUtils.readFileToString(outputFile, "utf-8"));
-    }
-
-    /** Do not need the MojoRule. */
-    @WithoutMojo
-    @Test
-    public void testSomethingWhichDoesNotNeedTheMojoAndProbablyShouldBeExtractedIntoANewClassOfItsOwn() {
-        assertTrue(true);
     }
 
 }

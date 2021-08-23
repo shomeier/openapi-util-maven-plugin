@@ -83,16 +83,16 @@ public class YamlResolver {
 
         final Components components = openApi.getComponents();
         if (components != null) {
-            sort(components.getSchemas());
-            sort(components.getExtensions());
-            sort(components.getCallbacks());
-            sort(components.getRequestBodies());
-            sort(components.getExamples());
-            sort(components.getHeaders());
-            sort(components.getLinks());
-            sort(components.getParameters());
-            sort(components.getResponses());
-            sort(components.getSecuritySchemes());
+            components.setSchemas(sort(components.getSchemas()));
+            components.setExtensions(sort(components.getExtensions()));
+            components.setCallbacks(sort(components.getCallbacks()));
+            components.setRequestBodies(sort(components.getRequestBodies()));
+            components.setExamples(sort(components.getExamples()));
+            components.setHeaders(sort(components.getHeaders()));
+            components.setLinks(sort(components.getLinks()));
+            components.setParameters(sort(components.getParameters()));
+            components.setResponses(sort(components.getResponses()));
+            components.setSecuritySchemes(sort(components.getSecuritySchemes()));
         }
 
         return openApi;
