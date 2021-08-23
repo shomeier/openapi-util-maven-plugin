@@ -7,7 +7,7 @@ info:
 servers:
   - url: http://petstore.swagger.io/v1
 paths:
-  /stores:
+  /storesapi/stores:
     get:
       summary: List all stores
       operationId: listStores
@@ -43,7 +43,7 @@ paths:
       summary: Create a store
       operationId: createStore
       tags:
-        - stores
+        - initialTag
       responses:
         '201':
           description: Null response
@@ -53,7 +53,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /stores/{storeId}:
+  /storesapi/stores/{storeId}:
     get:
       summary: Info for a specific store
       operationId: showStoreById

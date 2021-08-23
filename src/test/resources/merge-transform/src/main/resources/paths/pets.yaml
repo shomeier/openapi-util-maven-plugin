@@ -1,18 +1,18 @@
 openapi: "3.0.0"
 info:
   version: 1.0.0
-  title: Swagger Petstore - Stores API
+  title: Swagger Petstore - Pets API
   license:
     name: MIT
 servers:
   - url: http://petstore.swagger.io/v1
 paths:
-  /stores:
+  /petsapi/pets:
     get:
-      summary: List all stores
-      operationId: listStores
+      summary: List all pets
+      operationId: listPets
       tags:
-        - stores
+        - pets
       parameters:
         - name: limit
           in: query
@@ -23,7 +23,7 @@ paths:
             format: int32
       responses:
         '200':
-          description: A paged array of stores
+          description: A paged array of pets
           headers:
             x-next:
               description: A link to the next page of responses
@@ -32,7 +32,7 @@ paths:
           content:
             application/json:    
               schema:
-                $ref: "#/components/schemas/Stores"
+                $ref: "#/components/schemas/Pets"
         default:
           description: unexpected error
           content:
@@ -40,10 +40,10 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     post:
-      summary: Create a store
-      operationId: createStore
+      summary: Create a pet
+      operationId: createPets
       tags:
-        - stores
+        - pets
       responses:
         '201':
           description: Null response
@@ -53,17 +53,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /stores/{storeId}:
+  /petsapi/pets/{petId}:
     get:
-      summary: Info for a specific store
-      operationId: showStoreById
+      summary: Info for a specific pet
+      operationId: showPetById
       tags:
-        - stores
+        - pets
       parameters:
-        - name: storeId
+        - name: petId
           in: path
           required: true
-          description: The id of the store to retrieve
+          description: The id of the pet to retrieve
           schema:
             type: string
       responses:
@@ -72,7 +72,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Store"
+                $ref: "#/components/schemas/Pet"
         default:
           description: unexpected error
           content:
@@ -81,7 +81,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 components:
   schemas:
-    Store:
+    Pet:
       type: object
       required:
         - id
@@ -94,10 +94,10 @@ components:
           type: string
         tag:
           type: string
-    Stores:
+    Pets:
       type: array
       items:
-        $ref: "#/components/schemas/Store"
+        $ref: "#/components/schemas/Pet"
     Error:
       type: object
       required:

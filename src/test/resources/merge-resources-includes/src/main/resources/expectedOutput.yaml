@@ -10,8 +10,8 @@ paths:
   /pets:
     $ref: ./pets/pets.yaml#/paths/~1pets
   /pets/{petId}:
-    $ref: "./pets/pets.yaml#/paths/~1pets~1{petId}"
+    $ref: ./pets/pets.yaml#/paths/~1pets~1{petId}
   /stores:
     $ref: ./stores/stores.yaml#/paths/~1stores
   /stores/{storeId}:
-    $ref: "./stores/stores.yaml#/paths/~1stores~1{storeId}"
+    $ref: ./stores/stores.yaml#/paths/~1stores~1{storeId}

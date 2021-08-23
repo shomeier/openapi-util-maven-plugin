@@ -16,6 +16,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.oas.models.OpenAPI;
+import pl.joegreen.lambdaFromString.LambdaCreationException;
 
 @Mojo(name = Merge.GOAL, defaultPhase = LifecyclePhase.INITIALIZE)
 public class Merge extends AbstractMojo {
@@ -29,6 +30,9 @@ public class Merge extends AbstractMojo {
 
     @Parameter(defaultValue = "${project.resources}", required = true, readonly = true)
     private List<Resource> resources;
+
+    @Parameter(required = false, readonly = true)
+    private List<Transformer> transformers;
 
     @Parameter(required = true)
     private File outputFile;
@@ -57,14 +61,26 @@ public class Merge extends AbstractMojo {
             OpenAPI mergedApi = new Merger(outputFile)
                     .merge(includedFiles);
 
-            new Excluder(exclude).exclude(mergedApi);
-            OpenAPI resolvedApi = new YamlResolver(getResolveOption())
-                    .resolve(mergedApi);
+            OpenAPI excludedApi = new Excluder(exclude).exclude(mergedApi);
 
+            OpenAPI transformedApi = excludedApi;
+            if (transformers != null) {
+                for (Transformer transformer : transformers) {
+                    transformer.transform(transformedApi);
+                }
+            }
+
+            OpenAPI resolvedApi = new YamlResolver(getResolveOption())
+                    .resolve(transformedApi);
+
+            // org.openapitools.codegen.serializer.SerializerUtils sorts properties alphabetically
+            // String yamlAsString = SerializerUtils.toYamlString(resolvedApi);
             String yamlAsString = Yaml.pretty().writeValueAsString(resolvedApi);
             FileUtils.writeStringToFile(outputFile, yamlAsString, Charset.defaultCharset(), false);
         } catch (IOException e) {
             throw new MojoExecutionException("Error while merging", e);
+        } catch (LambdaCreationException e) {
+            throw new MojoExecutionException("Error while creating lambda transformation", e);
         }
     }
 

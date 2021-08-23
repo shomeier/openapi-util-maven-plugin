@@ -1,8 +1,12 @@
 package io.github.shomeier.maven.plugin.openapi.util;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.core.util.Yaml;
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
@@ -28,6 +32,7 @@ public class YamlResolver {
 
         removeRefs(resultApi);
         sortPaths(resultApi);
+        sortComponents(resultApi);
         return resultApi;
     }
 
@@ -72,5 +77,34 @@ public class YamlResolver {
                 .forEach(k -> sortedPaths.put(k, oldPaths.get(k)));
 
         return openApi.paths(sortedPaths);
+    }
+
+    private OpenAPI sortComponents(OpenAPI openApi) {
+
+        final Components components = openApi.getComponents();
+        if (components != null) {
+            sort(components.getSchemas());
+            sort(components.getExtensions());
+            sort(components.getCallbacks());
+            sort(components.getRequestBodies());
+            sort(components.getExamples());
+            sort(components.getHeaders());
+            sort(components.getLinks());
+            sort(components.getParameters());
+            sort(components.getResponses());
+            sort(components.getSecuritySchemes());
+        }
+
+        return openApi;
+    }
+
+    private <T> Map<String, T> sort(Map<String, T> map) {
+        if (map != null) {
+            return map.entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                            (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+        }
+        return null;
     }
 }

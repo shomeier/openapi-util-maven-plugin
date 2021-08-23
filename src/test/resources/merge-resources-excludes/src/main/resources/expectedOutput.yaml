@@ -10,4 +10,4 @@ paths:
   /pets:
     $ref: ./paths/pets.yaml#/paths/~1pets
   /pets/{petId}:
-    $ref: "./paths/pets.yaml#/paths/~1pets~1{petId}"
+    $ref: ./paths/pets.yaml#/paths/~1pets~1{petId}

@@ -220,7 +220,7 @@ paths:
   /stores/{storeId}:
     get:
       tags:
-      - store
+      - stores
       summary: Info for a specific store
       operationId: showStoreById
       parameters:

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.github.shomeier</groupId>
+  <artifactId>project-to-test</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Test MyMojo</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.github.shomeier</groupId>
+        <artifactId>openapi-util-maven-plugin</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <configuration>
+          <headerFile>${project.basedir}/src/main/resources/header.yaml</headerFile>
+          <resources>
+            <resource>
+              <directory>${project.basedir}/src/main/resources/paths</directory>
+            </resource>
+          </resources>
+          <outputFile>
+            ${project.basedir}/src/main/resources/output.yaml
+          </outputFile>
+          <transformers>
+            <transformer>
+              <imports>
+                java.util.regex.Pattern,java.util.regex.Matcher,java.util.Collections
+              </imports>
+              <lambda>
+              openApi -> {
+                openApi.getPaths().entrySet().forEach(e -> {
+                  e.getValue().readOperations().forEach(o -> {
+                      Matcher m = Pattern.compile("^/([a-zA-Z]+)/.*$+").matcher(e.getKey());
+                      if (m.matches()) {
+                          o.setTags(Collections.singletonList(m.group(1)));
+                      }
+                  });
+                });
+              }
+              </lambda>
+            </transformer>
+          </transformers>
+          <resolve>true</resolve>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
