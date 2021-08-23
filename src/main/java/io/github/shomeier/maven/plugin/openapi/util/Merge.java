@@ -67,20 +67,19 @@ public class Merge extends AbstractMojo {
             }
             FileUtils.copyFile(headerFile, outputFile);
 
-            OpenAPI mergedApi = new Merger(outputFile)
+            OpenAPI openApi = new Merger(outputFile)
                     .merge(includedFiles);
 
-            OpenAPI excludedApi = new Excluder(exclude).exclude(mergedApi);
+            new Excluder(exclude).exclude(openApi);
 
-            OpenAPI transformedApi = excludedApi;
             if (transformers != null) {
                 for (Transformer transformer : transformers) {
-                    transformer.transform(transformedApi);
+                    transformer.transform(openApi);
                 }
             }
 
             OpenAPI resolvedApi = new YamlResolver(getResolveOption())
-                    .resolve(transformedApi);
+                    .resolve(openApi);
 
             // org.openapitools.codegen.serializer.SerializerUtils sorts properties alphabetically
             // String yamlAsString = SerializerUtils.toYamlString(resolvedApi);

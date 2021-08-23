@@ -18,7 +18,7 @@ public class Excluder {
         this.exclude = exclude;
     }
 
-    public OpenAPI exclude(OpenAPI openApi) {
+    public void exclude(OpenAPI openApi) {
 
         if ((exclude != null) && (!exclude.trim().isEmpty())) {
             Optional.ofNullable(openApi.getPaths()).ifPresent(paths -> {
@@ -35,7 +35,7 @@ public class Excluder {
 
         }
 
-        return removeEmptyPaths(openApi);
+        removeEmptyPaths(openApi);
     }
 
     private Map<HttpMethod, Operation> findOperationsToExclude(PathItem pathItem) {
@@ -46,7 +46,7 @@ public class Excluder {
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
 
-    private OpenAPI removeEmptyPaths(OpenAPI openApi) {
+    private void removeEmptyPaths(OpenAPI openApi) {
         Optional.ofNullable(openApi.getPaths()).ifPresent(paths -> {
 
             List<String> pathsToRemove = paths.entrySet().stream()
@@ -55,7 +55,5 @@ public class Excluder {
                     .collect(Collectors.toList());
             pathsToRemove.forEach(paths::remove);
         });
-
-        return openApi;
     }
 }
