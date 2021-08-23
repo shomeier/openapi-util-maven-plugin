@@ -66,7 +66,7 @@ public class Merge extends AbstractMojo {
             OpenAPI transformedApi = excludedApi;
             if (transformers != null) {
                 for (Transformer transformer : transformers) {
-                    transformedApi = transformer.transform(transformedApi);
+                    transformer.transform(transformedApi);
                 }
             }
 

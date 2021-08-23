@@ -149,6 +149,33 @@ You can exclude operations which have a marker in form of an OpenAPI extension s
 ```
 Both operations will be excluded from the ouptut file via the following regex:
 ```<exclude>x-\w*-internal</exclude>```
+
+### Transform Operations
+
+You can provide your own transformation of an OpenAPI document via a lambda string which must implement the Consumer<OpenAPI> interface:
+```xml
+...
+    <transformers>
+      <transformer>
+        <imports>
+          java.util.regex.Pattern,java.util.regex.Matcher,java.util.Collections
+        </imports>
+        <lambda>
+          openApi -> {
+            openApi.getPaths().entrySet().forEach(e -> {
+              e.getValue().readOperations().forEach(o -> {
+                  Matcher m = Pattern.compile("^/([a-zA-Z]+)/.*$+").matcher(e.getKey());
+                  if (m.matches()) {
+                      o.setTags(Collections.singletonList(m.group(1)));
+                  }
+              });
+            });
+          }
+        </lambda>
+      </transformer>
+    </transformers>
+...
+```
 ## Using in conjunction with openapi-generator-maven-plugin
 
 You can then process the output further by for example passing it as \<inputSpec\> for the [openapi-generator-maven-plugin](https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-maven-plugin/README.md).
