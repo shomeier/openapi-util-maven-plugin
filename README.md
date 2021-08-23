@@ -158,19 +158,21 @@ You can provide your own transformation of an OpenAPI document via a lambda stri
     <transformers>
       <transformer>
         <imports>
-          java.util.regex.Pattern,java.util.regex.Matcher,java.util.Collections
+          java.util.regex.Pattern,java.util.regex.Matcher,java.util.Collections,java.util.Optional
         </imports>
         <lambda>
           openApi -> {
-            openApi.getPaths().entrySet().forEach(e -> {
-              e.getValue().readOperations().forEach(o -> {
-                  Matcher m = Pattern.compile("^/([a-zA-Z]+)/.*$+").matcher(e.getKey());
-                  if (m.matches()) {
-                      o.setTags(Collections.singletonList(m.group(1)));
-                  }
-              });
-            });
-          }
+                Optional.ofNullable(openApi.getPaths()).ifPresent(paths -> {
+                    paths.entrySet().forEach(e -> {
+                        e.getValue().readOperations().forEach(o -> {
+                            Matcher m = Pattern.compile("^/([a-zA-Z]+)/.*$+").matcher(e.getKey());
+                            if (m.matches()) {
+                                o.setTags(Collections.singletonList(m.group(1)));
+                            }
+                        });
+                    });
+                });
+              }
         </lambda>
       </transformer>
     </transformers>

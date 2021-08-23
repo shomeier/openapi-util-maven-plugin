@@ -56,6 +56,16 @@ public class MergeTest {
         testProject("merge-transform");
     }
 
+    @Test
+    public void testMergeTransformOneFileHeader() throws Exception {
+        testProject("merge-transform-one-file-header");
+    }
+
+    @Test
+    public void testMergeTransformNoFileHeader() throws Exception {
+        testProject("merge-transform-no-file-header");
+    }
+
     /** Do not need the MojoRule. */
     @WithoutMojo
     @Test

@@ -3,12 +3,12 @@ package io.github.shomeier.maven.plugin.openapi.util;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.PathItem.HttpMethod;
-import io.swagger.v3.oas.models.Paths;
 
 public class Excluder {
 
@@ -21,14 +21,18 @@ public class Excluder {
     public OpenAPI exclude(OpenAPI openApi) {
 
         if ((exclude != null) && (!exclude.trim().isEmpty())) {
-            for (Entry<String, PathItem> pathEntry : openApi.getPaths().entrySet()) {
+            Optional.ofNullable(openApi.getPaths()).ifPresent(paths -> {
 
-                PathItem pathItem = pathEntry.getValue();
-                Map<HttpMethod, Operation> operationsToExclude = findOperationsToExclude(pathItem);
-                for (Entry<HttpMethod, Operation> excludedOperation : operationsToExclude.entrySet()) {
-                    pathItem.operation(excludedOperation.getKey(), null);
+                for (Entry<String, PathItem> pathEntry : paths.entrySet()) {
+
+                    PathItem pathItem = pathEntry.getValue();
+                    Map<HttpMethod, Operation> operationsToExclude = findOperationsToExclude(pathItem);
+                    for (Entry<HttpMethod, Operation> excludedOperation : operationsToExclude.entrySet()) {
+                        pathItem.operation(excludedOperation.getKey(), null);
+                    }
                 }
-            }
+            });
+
         }
 
         return removeEmptyPaths(openApi);
@@ -43,12 +47,14 @@ public class Excluder {
     }
 
     private OpenAPI removeEmptyPaths(OpenAPI openApi) {
-        Paths paths = openApi.getPaths();
-        List<String> pathsToRemove = paths.entrySet().stream()
-                .filter(e -> e.getValue().readOperations().isEmpty())
-                .map(Entry::getKey)
-                .collect(Collectors.toList());
-        pathsToRemove.forEach(paths::remove);
+        Optional.ofNullable(openApi.getPaths()).ifPresent(paths -> {
+
+            List<String> pathsToRemove = paths.entrySet().stream()
+                    .filter(e -> e.getValue().readOperations().isEmpty())
+                    .map(Entry::getKey)
+                    .collect(Collectors.toList());
+            pathsToRemove.forEach(paths::remove);
+        });
 
         return openApi;
     }

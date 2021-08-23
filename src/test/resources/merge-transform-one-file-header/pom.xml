@@ -20,7 +20,10 @@
           <headerFile>${project.basedir}/src/main/resources/header.yaml</headerFile>
           <resources>
             <resource>
-              <directory>${project.basedir}/src/main/resources/paths</directory>
+              <directory>${project.basedir}/src/main/resources/paths/</directory>
+              <includes>
+                <include>pets.yaml</include>
+              </includes>
             </resource>
           </resources>
           <outputFile>
@@ -33,17 +36,17 @@
               </imports>
               <lambda>
                 openApi -> {
-                  Optional.ofNullable(openApi.getPaths()).ifPresent(paths -> {
-                      paths.entrySet().forEach(e -> {
-                          e.getValue().readOperations().forEach(o -> {
-                              Matcher m = Pattern.compile("^/([a-zA-Z]+)/.*$+").matcher(e.getKey());
-                              if (m.matches()) {
-                                  o.setTags(Collections.singletonList(m.group(1)));
-                              }
-                          });
-                      });
-                  });
-                }
+                    Optional.ofNullable(openApi.getPaths()).ifPresent(paths -> {
+                        paths.entrySet().forEach(e -> {
+                            e.getValue().readOperations().forEach(o -> {
+                                Matcher m = Pattern.compile("^/([a-zA-Z]+)/.*$+").matcher(e.getKey());
+                                if (m.matches()) {
+                                    o.setTags(Collections.singletonList(m.group(1)));
+                                }
+                            });
+                        });
+                    });
+                  }
               </lambda>
             </transformer>
           </transformers>

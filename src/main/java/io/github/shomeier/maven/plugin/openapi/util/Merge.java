@@ -50,13 +50,22 @@ public class Merge extends AbstractMojo {
     protected MavenSession session;
 
     public void execute() throws MojoExecutionException {
-        validateParameters();
+        Validator.validateParam(outputFile, "outputFile");
 
         try {
-            FileUtils.copyFile(headerFile, outputFile);
-
             List<Path> includedFiles = new ResourcesResolver(resources, project, getLog())
                     .getIncludedFiles();
+            Validator.validateIncludedFiles(includedFiles);
+
+            // we only need the header file if we merge more than one yaml file
+            if (includedFiles.size() > 1) {
+                Validator.validateFile(headerFile, "headerFile");
+            } else {
+                if (headerFile == null) {
+                    headerFile = includedFiles.get(0).toFile();
+                }
+            }
+            FileUtils.copyFile(headerFile, outputFile);
 
             OpenAPI mergedApi = new Merger(outputFile)
                     .merge(includedFiles);

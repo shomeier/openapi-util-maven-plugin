@@ -17,10 +17,12 @@
         <artifactId>openapi-util-maven-plugin</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <configuration>
-          <headerFile>${project.basedir}/src/main/resources/header.yaml</headerFile>
           <resources>
             <resource>
               <directory>${project.basedir}/src/main/resources/paths</directory>
+              <includes>
+                <include>stores.yaml</include>
+              </includes>
             </resource>
           </resources>
           <outputFile>
