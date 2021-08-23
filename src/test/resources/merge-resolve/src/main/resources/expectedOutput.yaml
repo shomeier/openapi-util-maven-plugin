@@ -165,23 +165,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Store:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        tag:
-          type: string
-    Stores:
-      type: array
-      items:
-        $ref: '#/components/schemas/Store'
     Error:
       required:
       - code
@@ -210,3 +193,20 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Pet'
+    Store:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        tag:
+          type: string
+    Stores:
+      type: array
+      items:
+        $ref: '#/components/schemas/Store'

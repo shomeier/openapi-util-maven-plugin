@@ -9,9 +9,6 @@ import org.apache.maven.plugin.testing.MojoRule;
 import org.apache.maven.plugin.testing.WithoutMojo;
 import org.junit.Rule;
 import org.junit.Test;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.parser.OpenAPIV3Parser;
-import io.swagger.v3.parser.core.models.ParseOptions;
 
 public class MergeTest {
 
@@ -110,15 +107,12 @@ public class MergeTest {
         assertNotNull(outputFile);
         assertTrue(outputFile.exists());
 
-        // the order of the schema components is not guaranteed
-        ParseOptions options = new ParseOptions();
-        options.setResolve(true);
-        OpenAPI openApi = new OpenAPIV3Parser().read(outputFile.getAbsolutePath(), null, options);
-        assertTrue(openApi.getComponents().getSchemas().containsKey("Store"));
-        assertTrue(openApi.getComponents().getSchemas().containsKey("Stores"));
-        assertTrue(openApi.getComponents().getSchemas().containsKey("Pet"));
-        assertTrue(openApi.getComponents().getSchemas().containsKey("Pets"));
-        assertTrue(openApi.getComponents().getSchemas().containsKey("Error"));
+        ClassLoader classLoader = getClass().getClassLoader();
+        File expectedFile = new File(classLoader
+                .getResource(prjName + "/src/main/resources/expectedOutput.yaml").getFile());
+        assertEquals("The files differ!",
+                FileUtils.readFileToString(expectedFile, "utf-8"),
+                FileUtils.readFileToString(outputFile, "utf-8"));
     }
 
     @Test

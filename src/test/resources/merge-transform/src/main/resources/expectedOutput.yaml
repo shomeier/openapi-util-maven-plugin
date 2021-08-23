@@ -165,6 +165,17 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    Error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
     Pet:
       required:
       - id
@@ -182,17 +193,6 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Pet'
-    Error:
-      required:
-      - code
-      - message
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
     Store:
       required:
       - id
