@@ -62,19 +62,22 @@ public class YamlResolver {
 
     private OpenAPI removeRefs(OpenAPI openApi) {
 
-        openApi.getPaths().values()
-                .forEach(p -> Optional.ofNullable(p.getExtensions())
-                        .ifPresent(e -> e.remove(Constants.INTERNAL_REF_EXTENSION)));
+        Optional.ofNullable(openApi.getPaths()).ifPresent(paths -> {
+            paths.values()
+                    .forEach(p -> Optional.ofNullable(p.getExtensions())
+                            .ifPresent(e -> e.remove(Constants.INTERNAL_REF_EXTENSION)));
+        });
         return openApi;
     }
 
     private OpenAPI sortPaths(OpenAPI openApi) {
 
-        Paths oldPaths = openApi.getPaths();
         Paths sortedPaths = new Paths();
-        oldPaths.keySet().stream()
-                .sorted()
-                .forEach(k -> sortedPaths.put(k, oldPaths.get(k)));
+        Optional.ofNullable(openApi.getPaths()).ifPresent(paths -> {
+            paths.keySet().stream()
+                    .sorted()
+                    .forEach(k -> sortedPaths.put(k, paths.get(k)));
+        });
 
         return openApi.paths(sortedPaths);
     }
