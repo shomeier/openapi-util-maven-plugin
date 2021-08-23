@@ -176,6 +176,18 @@ You can provide your own transformation of an OpenAPI document via a lambda stri
     </transformers>
 ...
 ```
+This example will take the first path element from every "paths" item and set it as tag ("petsapi"):
+```xml
+...
+paths:
+  /petsapi/pets:
+    get:
+      summary: List all pets
+      operationId: listPets
+      tags:
+        - petsapi
+...
+```
 ## Using in conjunction with openapi-generator-maven-plugin
 
 You can then process the output further by for example passing it as \<inputSpec\> for the [openapi-generator-maven-plugin](https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-maven-plugin/README.md).
