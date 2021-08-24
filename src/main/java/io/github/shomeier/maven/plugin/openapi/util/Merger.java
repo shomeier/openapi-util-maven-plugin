@@ -14,7 +14,6 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.parser.OpenAPIV3Parser;
-import io.swagger.v3.parser.core.models.ParseOptions;
 
 public class Merger {
 
@@ -52,10 +51,7 @@ public class Merger {
     }
 
     private OpenAPI parse(Path path) {
-        final ParseOptions options = new ParseOptions();
-        options.setResolve(false);
-
-        return new OpenAPIV3Parser().read(path.toString(), null, options);
+        return new OpenAPIV3Parser().read(path.toString());
     }
 
     private String buildRef(Path relativePath, String oaPath) {
