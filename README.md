@@ -155,27 +155,61 @@ Both operations will be excluded from the ouptut file via the following regex:
 You can provide your own transformation of an OpenAPI document via a lambda string which must implement the Consumer<OpenAPI> interface:
 ```xml
 ...
-    <transformers>
-      <transformer>
-        <imports>
-          java.util.regex.Pattern,java.util.regex.Matcher,java.util.Collections,java.util.Optional
-        </imports>
-        <lambda>
-          openApi -> {
-                Optional.ofNullable(openApi.getPaths()).ifPresent(paths -> {
-                    paths.entrySet().forEach(e -> {
-                        e.getValue().readOperations().forEach(o -> {
-                            Matcher m = Pattern.compile("^/([a-zA-Z]+)/.*$+").matcher(e.getKey());
-                            if (m.matches()) {
-                                o.setTags(Collections.singletonList(m.group(1)));
-                            }
-                        });
-                    });
-                });
-              }
-        </lambda>
-      </transformer>
-    </transformers>
+  <plugin>
+    <groupId>io.github.shomeier</groupId>
+    <artifactId>openapi-util-maven-plugin</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+    <dependencies>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>2.1.2</version>
+        </dependency>
+    </dependencies>
+      <executions>
+        <execution>
+          <id>merge-all-api</id>
+          <goals>
+              <goal>merge</goal>
+          </goals>
+          <configuration>
+              <headerFile>${project.basedir}/src/main/resources/rest-api-header.yaml
+              </headerFile>
+              <resources>
+                  <resource>
+                      <directory>${project.basedir}/src/main/resources</directory>
+                      <include>**/paths/*.yaml</include>
+                  </resource>
+              </resources>
+              <outputFile>
+                  ${project.basedir}/src/main/resources/rest-api.yaml
+              </outputFile>
+              <transformers>
+                <transformer>
+                    <imports>
+                    java.util.regex.Pattern,java.util.regex.Matcher,java.util.Collections,java.util.Optional
+                    </imports>
+                    <lambda>
+                      openApi -> {
+                            Optional.ofNullable(openApi.getPaths()).ifPresent(paths -> {
+                                paths.entrySet().forEach(e -> {
+                                    e.getValue().readOperations().forEach(o -> {
+                                        Matcher m = Pattern.compile("^/([a-zA-Z]+)/.*$+").matcher(e.getKey());
+                                        if (m.matches()) {
+                                            o.setTags(Collections.singletonList(m.group(1)));
+                                        }
+                                    });
+                                });
+                            });
+                          }
+                    </lambda>
+                </transformer>
+              </transformers>
+              <resolve>true</resolve>
+          </configuration>
+        </execution>
+      </executions>
+  </plugin>
 ...
 ```
 This example will take the first path element from every "paths" item and set it as tag ("petsapi"):
@@ -190,6 +224,8 @@ paths:
         - petsapi
 ...
 ```
+Note that the jars set as plugin dependencies are set on the compilation classpath for lambda compilation.
+In this case swagger-models.
 ## Using in conjunction with openapi-generator-maven-plugin
 
 You can then process the output further by for example passing it as \<inputSpec\> for the [openapi-generator-maven-plugin](https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-maven-plugin/README.md).
