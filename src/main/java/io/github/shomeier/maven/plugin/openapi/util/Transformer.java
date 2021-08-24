@@ -12,7 +12,7 @@ public class Transformer {
     private String lambda;
     private String imports;
 
-    public String getLambdaString() {
+    public String getLambda() {
         return lambda;
     }
 
@@ -28,10 +28,11 @@ public class Transformer {
         this.imports = imports;
     }
 
-    public void transform(OpenAPI openApi) throws LambdaCreationException {
+    public void transform(OpenAPI openApi, String cp) throws LambdaCreationException {
 
         LambdaFactoryConfiguration conf = LambdaFactoryConfiguration.get()
-                .withImports(imports.split(","));
+                .withImports(imports.split(","))
+                .withCompilationClassPath(cp);
         LambdaFactory lambdaFactory = LambdaFactory.get(conf);
 
         Consumer<OpenAPI> consumer =

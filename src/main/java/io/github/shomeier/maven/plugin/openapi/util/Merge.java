@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.List;
+
+import io.swagger.v3.core.util.Yaml;
 import org.apache.commons.io.FileUtils;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -14,8 +17,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.oas.models.OpenAPI;
+import org.apache.maven.settings.Settings;
 import pl.joegreen.lambdaFromString.LambdaCreationException;
 
 @Mojo(name = Merge.GOAL, defaultPhase = LifecyclePhase.INITIALIZE)
@@ -49,6 +52,9 @@ public class Merge extends AbstractMojo {
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
     protected MavenSession session;
 
+    @Parameter( defaultValue = "${settings}", readonly = true )
+    private Settings settings;
+
     public void execute() throws MojoExecutionException {
         Validator.validateParam(outputFile, "outputFile");
 
@@ -72,9 +78,11 @@ public class Merge extends AbstractMojo {
 
             new Excluder(exclude).exclude(openApi);
 
+            DependencyArtifactResolver dependencyResolver = new DependencyArtifactResolver(project, settings);
+            String cp = dependencyResolver.buildClassPathFromDependencies();
             if (transformers != null) {
                 for (Transformer transformer : transformers) {
-                    transformer.transform(openApi);
+                    transformer.transform(openApi, cp);
                 }
             }
 
