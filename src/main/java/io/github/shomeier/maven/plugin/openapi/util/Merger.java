@@ -44,7 +44,11 @@ public class Merger {
             mergePaths(allPaths, targetFile, filePathEntry);
         }
 
-        target.components(allComponents);
+        if (target.getComponents() != null) {
+            mergeComponents(target.getComponents(), allComponents);
+        } else {
+            target.components(allComponents);
+        }
         allPaths.entrySet().forEach(e -> target.path(e.getKey(), e.getValue()));
 
         return target;
