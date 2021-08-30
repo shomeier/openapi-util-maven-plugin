@@ -6,6 +6,8 @@ info:
   version: 1.0.0
 servers:
 - url: http://petstore.swagger.io/v1
+security:
+- bearerAuth: []
 paths:
   /pets:
     get:
@@ -210,3 +212,8 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Store'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
