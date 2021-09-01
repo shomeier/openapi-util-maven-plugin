@@ -9,6 +9,7 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.StringJoiner;
 
@@ -59,6 +60,7 @@ public class DependencyArtifactResolver {
         if (settings.getLocalRepository() != null) {
             return settings.getLocalRepository();
         }
-        return System.getProperty("user.home") + "/.m2/repository";
+
+        return Paths.get(System.getProperty("user.home"), "/.m2/repository").toString();
     }
 }
