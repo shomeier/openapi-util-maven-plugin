@@ -15,7 +15,7 @@ Add to your `build->plugins` section (default phase is `initialize` phase)
 <plugin>
     <groupId>io.github.shomeier</groupId>
     <artifactId>openapi-util-maven-plugin</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.2</version>
     <executions>
         <execution>
             <goals>
@@ -158,7 +158,7 @@ You can provide your own transformation of an OpenAPI document via a lambda stri
   <plugin>
     <groupId>io.github.shomeier</groupId>
     <artifactId>openapi-util-maven-plugin</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.2.2</version>
     <dependencies>
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
@@ -235,7 +235,7 @@ This plugin is bound to phase 'initialize' which comes before 'generate-sources'
 <plugin>
     <groupId>io.github.shomeier</groupId>
     <artifactId>openapi-util-maven-plugin</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.2</version>
     <executions>
         <execution>
             <goals>
@@ -258,7 +258,7 @@ This plugin is bound to phase 'initialize' which comes before 'generate-sources'
 <plugin>
     <groupId>org.openapitools</groupId>
     <artifactId>openapi-generator-maven-plugin</artifactId>
-    <version>5.2.0</version>
+    <version>5.2.1</version>
     <executions>
         <execution>
             <goals>
