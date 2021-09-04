@@ -1,5 +1,10 @@
 package io.github.shomeier.maven.plugin.openapi.util;
 
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.StringJoiner;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
@@ -8,10 +13,6 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
-
-import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.StringJoiner;
 
 public class DependencyArtifactResolver {
 
@@ -29,7 +30,7 @@ public class DependencyArtifactResolver {
         final String localRepo = getLocalRepositoryBasePath();
 
         String classpath = System.getProperty("java.class.path");
-        StringJoiner compilationClassPathJoiner = new StringJoiner(":")
+        StringJoiner compilationClassPathJoiner = new StringJoiner(File.pathSeparator)
                 .add(classpath);
 
         Optional.ofNullable(project.getBuild()).ifPresent(b -> {
